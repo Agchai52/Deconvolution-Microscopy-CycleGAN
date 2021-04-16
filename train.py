@@ -258,7 +258,8 @@ def train(args):
                 }, net_d_s_save_path)
                 print("Checkpoint saved to {}".format("checkpoint/"))
 
-                break
+            break
+
 
         # Update Learning rate
         #lr_scheduler_G.step()
@@ -295,13 +296,14 @@ def train(args):
                 with open(ssim_record, 'a+') as file:
                     file.writelines(str(sum(all_ssim) / len(test_data_loader)) + "\n")
                 print("===> Avg. PSNR: {:.4f} dB".format(sum(all_psnr) / len(test_data_loader)))
+                break
 
     if args.save_intermediate:
         print("===> Average Validation PSNR for each epoch")
         print(PSNR_average)
 
     print("===> Saving Losses")
-    plot_losses()
+    # plot_losses()
     print("===> Training finished")
 
 
