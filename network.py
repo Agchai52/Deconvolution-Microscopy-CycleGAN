@@ -130,7 +130,7 @@ class Generator(nn.Module):
 class Discriminator(nn.Module):
     def __init__(self, args, device='cpu'):
         super(Discriminator, self).__init__()
-        self.input_nc = args.input_nc * 2
+        self.input_nc = args.input_nc
         self.ndf = args.ndf
         self.device = device
         self.d_1 = nn.Sequential(ConvBlock(self.input_nc, self.ndf * 1, stride=2),  # (B, 64, H, W)
