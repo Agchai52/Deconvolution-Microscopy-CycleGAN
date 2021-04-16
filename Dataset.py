@@ -47,11 +47,6 @@ class DeblurDataset(Dataset):
         img_A = img_A.unsqueeze(0)
         img_B = img_B.unsqueeze(0)
 
-        print(img_A.shape)
-        print(img_B.shape)
-        print(img_name)
-        exit()
-
         return img_A, img_B, img_name
 
     def __len__(self):
