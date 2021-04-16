@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torchgeometry as tgm
+import torchvision.transforms as transforms
 
 def weights_init(m):
     if hasattr(m, 'weight') and m.weight is not None:
@@ -140,25 +140,29 @@ class Discriminator(nn.Module):
                                  nn.Conv2d(self.ndf * 8, 1, kernel_size=3, stride=1, padding=1, padding_mode='circular')
                                  )                                                  # (B, 1, H/8, W/8)
 
-        self.d_2 = nn.Sequential(nn.MaxPool2d(2),
-                                 ConvBlock(self.input_nc, self.ndf * 1, stride=2),  # (B, 64, H/2, W/2)
-                                 ConvBlock(self.ndf * 1, self.ndf * 2, stride=2),   # (B, 128, H/4, W/4)
-                                 ConvBlock(self.ndf * 2, self.ndf * 4, stride=2),   # (B, 256, H/8, W/8)
-                                 ConvBlock(self.ndf * 4, self.ndf * 8, stride=2),   # (B, 512, H/16, W/16)
-                                 nn.Conv2d(self.ndf * 8, 1, kernel_size=3, stride=1, padding=1, padding_mode='circular')
-                                 )                                                  # (B, 1, H/16, W/16)
-
-        self.d_3 = nn.Sequential(nn.MaxPool2d(4),
-                                 ConvBlock(self.input_nc, self.ndf * 1, stride=2),  # (B, 64, H/4, W/4)
+        self.d_2 = nn.Sequential(ConvBlock(self.input_nc, self.ndf * 1, stride=2),  # (B, 64, H/4, W/4)
                                  ConvBlock(self.ndf * 1, self.ndf * 2, stride=2),   # (B, 128, H/8, W/8)
                                  ConvBlock(self.ndf * 2, self.ndf * 4, stride=2),   # (B, 256, H/16, W/16)
                                  ConvBlock(self.ndf * 4, self.ndf * 8, stride=2),   # (B, 512, H/32, W/32)
+                                 nn.ReflectionPad2d((1, 1, 1, 1)),
+                                 nn.Conv2d(self.ndf * 8, 1, kernel_size=3, stride=1, padding=1, padding_mode='circular')
+                                 )                                                  # (B, 1, H/32, W/32)
+
+        self.d_3 = nn.Sequential(ConvBlock(self.input_nc, self.ndf * 1, stride=2),  # (B, 64, H/8, W/8)
+                                 ConvBlock(self.ndf * 1, self.ndf * 2, stride=2),   # (B, 128, H/16, W/16)
+                                 ConvBlock(self.ndf * 2, self.ndf * 4, stride=2),   # (B, 256, H/32, W/32)
+                                 nn.ReflectionPad2d((1, 1, 1, 1)),
+                                 ConvBlock(self.ndf * 4, self.ndf * 8, stride=2),   # (B, 512, H/32, W/32)
+                                 nn.ReflectionPad2d((1, 1, 1, 1)),
                                  nn.Conv2d(self.ndf * 8, 1, kernel_size=3, stride=1, padding=1, padding_mode='circular')
                                  )                                                  # (B, 1, H/32, W/32)
 
     def forward(self, img):
+        b, _, h, w = img.shape
         out1 = self.d_1(img)
+        img = transforms.RandomCrop((h // 2, w // 2))(img)
         out2 = self.d_2(img)
+        img = transforms.RandomCrop((h // 4, w // 4))(img)
         out3 = self.d_3(img)
         return out1, out2, out3
 
