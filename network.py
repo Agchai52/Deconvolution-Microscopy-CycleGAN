@@ -80,10 +80,10 @@ class Generator(nn.Module):
         self.e1 = nn.Sequential(ConvBlock(self.input_nc, self.ngf * 1),
                                 ConvBlock(self.ngf * 1, self.ngf * 1))  # (B, 64, H, W)
         self.e2 = nn.Sequential(nn.MaxPool2d(2),
-                                ConvBlock(self.ngf * 2, self.ngf * 2),
+                                ConvBlock(self.ngf * 1, self.ngf * 2),
                                 ConvBlock(self.ngf * 2, self.ngf * 2))  # (B, 128, H/2, W/2)
         self.e3 = nn.Sequential(nn.MaxPool2d(2),
-                                ConvBlock(self.ngf * 4, self.ngf * 4),
+                                ConvBlock(self.ngf * 2, self.ngf * 4),
                                 ConvBlock(self.ngf * 4, self.ngf * 4),
                                 ConvBlock(self.ngf * 4, self.ngf * 4),  # (B, 256, H/4, W/4)
                                 nn.ConvTranspose2d(self.ngf * 4, self.ngf * 2, kernel_size=3, stride=2, padding=1,
