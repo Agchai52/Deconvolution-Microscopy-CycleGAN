@@ -31,6 +31,7 @@ class DeblurDataset(Dataset):
         # h = int(img_A.size[1])
 
         img_A = transforms.Resize((self.args.fine_size, self.args.fine_size))(img_A)
+        print(img_A.size)
         exit()
 
         if self.is_train:  # Only resize sharp and flip sharp and blurry for training
