@@ -100,6 +100,7 @@ def train(args):
     # D_loss = []
     # G_loss = []
 
+    ddg_record = "ddg_record.txt"
     loss_record = "loss_record.txt"
     psnr_record = "psnr_record.txt"
     ssim_record = "ssim_record.txt"
