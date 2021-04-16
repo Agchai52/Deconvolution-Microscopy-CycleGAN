@@ -97,8 +97,7 @@ def train(args):
     # params = net_G.parameters()
     counter = 0
     PSNR_average = []
-    # D_loss = []
-    # G_loss = []
+    SSIM_average = []
 
     ddg_record = "ddg_record.txt"
     loss_record = "loss_record.txt"
