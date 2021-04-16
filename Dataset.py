@@ -38,6 +38,9 @@ class DeblurDataset(Dataset):
         if np.random.random() < 0.5:
             img_A = img_A.transpose(Image.FLIP_LEFT_RIGHT)
             img_B = img_B.transpose(Image.FLIP_LEFT_RIGHT)
+        if np.random.random() < 0.5:
+            img_A = img_A.transpose(Image.FLIP_TOP_BOTTOM)
+            img_B = img_B.transpose(Image.FLIP_TOP_BOTTOM)
 
         img_A = self.transform(img_A)
         img_B = self.transform(img_B)
