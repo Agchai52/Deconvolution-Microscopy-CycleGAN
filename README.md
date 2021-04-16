@@ -12,7 +12,8 @@ pip install -r requirements.txt
 ## Preprocess the dataset
 1. Generate dataset
 ```
-python generate_dataset.py
+python generate_dataset.py --phase train --num_imgs 2000
+python generate_dataset.py --phase test --num_imgs 500
 ```
 2. Rename the dataset as "dataset".
 3. To generate names of all the train and test data, run the file "readDatasetNames.py" 
