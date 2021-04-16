@@ -133,12 +133,12 @@ class Discriminator(nn.Module):
         self.input_nc = args.input_nc
         self.ndf = args.ndf
         self.device = device
-        self.d_1 = nn.Sequential(ConvBlock(self.input_nc, self.ndf * 1, stride=2),  # (B, 64, H, W)
-                                 ConvBlock(self.ndf * 1, self.ndf * 2, stride=2),   # (B, 128, H/2, W/2)
-                                 ConvBlock(self.ndf * 2, self.ndf * 4, stride=2),   # (B, 256, H/4, W/4)
-                                 ConvBlock(self.ndf * 4, self.ndf * 8, stride=2),   # (B, 512, H/8, W/8)
+        self.d_1 = nn.Sequential(ConvBlock(self.input_nc, self.ndf * 1, stride=2),  # (B, 64, H/2, W/2)
+                                 ConvBlock(self.ndf * 1, self.ndf * 2, stride=2),   # (B, 128, H/4, W/4)
+                                 ConvBlock(self.ndf * 2, self.ndf * 4, stride=2),   # (B, 256, H/8, W/8)
+                                 ConvBlock(self.ndf * 4, self.ndf * 8, stride=2),   # (B, 512, H/16, W/16)
                                  nn.Conv2d(self.ndf * 8, 1, kernel_size=3, stride=1, padding=1, padding_mode='circular')
-                                 )                                                  # (B, 1, H/8, W/8)
+                                 )                                                  # (B, 1, H/16, W/16)
 
         self.d_2 = nn.Sequential(ConvBlock(self.input_nc, self.ndf * 1, stride=2),  # (B, 64, H/4, W/4)
                                  ConvBlock(self.ndf * 1, self.ndf * 2, stride=2),   # (B, 128, H/8, W/8)
@@ -158,7 +158,7 @@ class Discriminator(nn.Module):
                                  )                                                  # (B, 1, H/32, W/32)
 
     def forward(self, img):
-        def randomCrop(img, crop_shape):
+        def random_crop(img, crop_shape):
             b, _, h, w = img.shape
             h1 = int(np.ceil(np.random.uniform(1e-2, h - crop_shape[0])))
             w1 = int(np.ceil(np.random.uniform(1e-2, w - crop_shape[1])))
@@ -167,14 +167,10 @@ class Discriminator(nn.Module):
 
         b, _, h, w = img.shape
         out1 = self.d_1(img)
-        img = randomCrop(img, (h // 2, w // 2))
+        img = random_crop(img, (h // 2, w // 2))
         out2 = self.d_2(img)
-        img = randomCrop(img, (h // 4, w // 4))
+        img = random_crop(img, (h // 4, w // 4))
         out3 = self.d_3(img)
-
-        print(out1.shape)
-        print(out2.shape)
-        print(out3.shape)
         return out1, out2, out3
 
 

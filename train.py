@@ -109,6 +109,9 @@ def train(args):
     for epoch in range(pre_epoch, args.epoch):
         all_psnr = []
         all_ssim = []
+        cur_d1 = []
+        cur_d2 = []
+        cur_g = []
         for iteration, batch in enumerate(train_data_loader, 1):
             real_B, real_S, img_name = batch[0], batch[1], batch[2]
             real_B, real_S = real_B.to(device), real_S.to(device)
