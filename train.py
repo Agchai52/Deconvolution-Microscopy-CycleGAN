@@ -112,11 +112,10 @@ def train(args):
         for iteration, batch in enumerate(train_data_loader, 1):
             real_B, real_S, img_name = batch[0], batch[1], batch[2]
             real_B, real_S = real_B.to(device), real_S.to(device)
-            print(real_B.shape)
-            print(real_S.shape)
-            print(img_name)
-            exit()
+
             fake_S = netG(real_B)
+            print(fake_S.shape)
+            exit()
             fake_B = netG_S2B(real_S)
 
             ############################
