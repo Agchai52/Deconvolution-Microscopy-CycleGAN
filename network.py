@@ -140,7 +140,7 @@ class Discriminator(nn.Module):
                                  nn.Conv2d(self.ndf * 8, 1, kernel_size=3, stride=1, padding=1, padding_mode='circular')
                                  )                                                  # (B, 1, H/8, W/8)
 
-        self.d_2 = nn.Sequential(nn.AvgPool2d(kernel_size=3, stride=2, padding=0, count_include_pad=False),
+        self.d_2 = nn.Sequential(nn.MaxPool2d(2),
                                  ConvBlock(self.input_nc, self.ndf * 1, stride=2),  # (B, 64, H/2, W/2)
                                  ConvBlock(self.ndf * 1, self.ndf * 2, stride=2),   # (B, 128, H/4, W/4)
                                  ConvBlock(self.ndf * 2, self.ndf * 4, stride=2),   # (B, 256, H/8, W/8)
@@ -148,7 +148,7 @@ class Discriminator(nn.Module):
                                  nn.Conv2d(self.ndf * 8, 1, kernel_size=3, stride=1, padding=1, padding_mode='circular')
                                  )                                                  # (B, 1, H/16, W/16)
 
-        self.d_3 = nn.Sequential(nn.AvgPool2d(kernel_size=3, stride=4, padding=0, count_include_pad=False),
+        self.d_3 = nn.Sequential(nn.MaxPool2d(4),
                                  ConvBlock(self.input_nc, self.ndf * 1, stride=2),  # (B, 64, H/4, W/4)
                                  ConvBlock(self.ndf * 1, self.ndf * 2, stride=2),   # (B, 128, H/8, W/8)
                                  ConvBlock(self.ndf * 2, self.ndf * 4, stride=2),   # (B, 256, H/16, W/16)
