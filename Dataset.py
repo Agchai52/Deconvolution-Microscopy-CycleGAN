@@ -42,12 +42,12 @@ class DeblurDataset(Dataset):
                 img_A = img_A.transpose(Image.FLIP_TOP_BOTTOM)
                 img_B = img_B.transpose(Image.FLIP_TOP_BOTTOM)
 
-        print(img_A.size)
-        print(img_B.size)
-        exit()
-
         img_A = self.transform(img_A)
         img_B = self.transform(img_B)
+
+        print(img_A.shape)
+        print(img_B.shape)
+        exit()
 
         img_A = img_A.unsqueeze(0)
         img_B = img_B.unsqueeze(0)
