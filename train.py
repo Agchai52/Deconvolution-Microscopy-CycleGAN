@@ -25,7 +25,7 @@ def train(args):
     test_data = [line.rstrip() for line in test_data]
 
     train_data_loader = DataLoader(DeblurDataset(train_data, args), batch_size=args.batch_size, shuffle=True)
-    test_data_loader = DataLoader(DeblurDataset(test_data, args, False), batch_size=args.batch_size, shuffle=False)
+    test_data_loader = DataLoader(DeblurDataset(test_data, args, False), batch_size=1, shuffle=False)
 
     device = torch.device("cuda")
     model_G = Generator(args, device)
@@ -89,9 +89,7 @@ def train(args):
     print('===> Setting up loss functions')
     criterion_L2 = nn.MSELoss().to(device)
     criterion_GAN = GANLoss().to(device)
-    criterion_Cycle = torch.nn.L1Loss()
-
-
+    criterion_Cycle = nn.MSELoss().to(device)
 
     # lr_scheduler_G = torch.optim.lr_scheduler.LambdaLR(optimizer_G, lr_lambda=LambdaLR(args.epoch, args.epoch_start, args.epoch_decay).step)
     # lr_scheduler_D = torch.optim.lr_scheduler.LambdaLR(optimizer_D, lr_lambda=LambdaLR(args.epoch, args.epoch_start, args.epoch_decay).step)
@@ -270,16 +268,15 @@ def train(args):
             with torch.no_grad():
                 for batch in test_data_loader:
                     real_B, real_S, img_name = batch[0], batch[1], batch[2]
-                    real_B, real_S = real_B.to(device), real_S.to(device)
+                    real_B, real_S = real_B.to(device), real_S.to(device)  # B = (B, 1, 64, 64), S = (B, 1, 256, 256)
                     pred_S = netG(real_B)
-                    if img_name[0][-3:] == '001':
-                        img_S = pred_S.detach().squeeze(0).cpu()
-                        save_img(img_S, '{}/test_'.format(args.test_dir) + img_name[0])
-
+                    pred_S = F.interpolate(pred_S, (args.load_size, args.load_size), mode='bilinear')  # 64 -> 256
                     cur_psnr, cur_ssim = compute_metrics(real_S, pred_S)
                     all_psnr.append(cur_psnr)
                     all_ssim.append(cur_ssim)
                     if img_name[0][-3:] == '001':
+                        img_S = pred_S.detach().squeeze(0).cpu()
+                        save_img(img_S, '{}/test_'.format(args.test_dir) + img_name[0])
                         print('test_{}: PSNR = {} dB, SSIM = {}'.format(img_name[0], cur_psnr, cur_ssim))
 
                 PSNR_average.append(sum(all_psnr) / len(test_data_loader))
@@ -290,8 +287,9 @@ def train(args):
                     file.writelines(str(sum(all_ssim) / len(test_data_loader)) + "\n")
                 print("===> Avg. PSNR: {:.4f} dB".format(sum(all_psnr) / len(test_data_loader)))
 
-    print("===> Average Validation PSNR for each epoch")
-    print(PSNR_average)
+    if args.save_intermediate:
+        print("===> Average Validation PSNR for each epoch")
+        print(PSNR_average)
 
     print("===> Saving Losses")
     plot_losses()

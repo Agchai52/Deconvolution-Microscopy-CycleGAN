@@ -37,7 +37,7 @@ def test(args):
     test_data = f_test.readlines()
     test_data = [line.rstrip() for line in test_data]
     f_test.close()
-    test_data_loader = DataLoader(DeblurDataset(test_data, args, False), batch_size=args.batch_size, shuffle=False)
+    test_data_loader = DataLoader(DeblurDataset(test_data, args, False), batch_size=1, shuffle=False)
 
     ############################
     # For Other datasets
@@ -54,25 +54,16 @@ def test(args):
     with torch.no_grad():
         for batch in test_data_loader:
             real_B, real_S, img_name = batch[0], batch[1], batch[2]
-            real_B, real_S = real_B.to(device), real_S.to(device)
+            real_B, real_S = real_B.to(device), real_S.to(device)  # B = (B, 1, 64, 64), S = (B, 1, 256, 256)
             pred_S = netG(real_B)
-            if img_name[0][-3:] == '001':
-                img_S = pred_S.detach().squeeze(0).cpu()
-                save_img(img_S, '{}/test_'.format(args.test_dir) + img_name[0])
-
+            pred_S = F.interpolate(pred_S, (args.load_size, args.load_size), mode='bilinear')  # 64 -> 256
             cur_psnr, cur_ssim = compute_metrics(real_S, pred_S)
             all_psnr.append(cur_psnr)
             all_ssim.append(cur_ssim)
             if img_name[0][-3:] == '001':
+                img_S = pred_S.detach().squeeze(0).cpu()
+                save_img(img_S, '{}/test_'.format(args.test_dir) + img_name[0])
                 print('test_{}: PSNR = {} dB, SSIM = {}'.format(img_name[0], cur_psnr, cur_ssim))
-
-        PSNR_average.append(sum(all_psnr) / len(test_data_loader))
-        SSIM_average.append(sum(all_ssim) / len(test_data_loader))
-        with open(psnr_record, 'a+') as file:
-            file.writelines(str(sum(all_psnr) / len(test_data_loader)) + "\n")
-        with open(ssim_record, 'a+') as file:
-            file.writelines(str(sum(all_ssim) / len(test_data_loader)) + "\n")
-        print("===> Avg. PSNR: {:.4f} dB".format(sum(all_psnr) / len(test_data_loader)))
 
     total_time = time.time() - start_time
     ave_psnr = sum(all_psnr) / len(test_data_loader)

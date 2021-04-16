@@ -32,4 +32,5 @@ python main.py --phase test --gpu 0
 ```
 
 ## Test real images
+pad input image to 4x
 To do
