@@ -76,9 +76,9 @@ def train(args):
         optimizer_D_S.load_state_dict(checkpointDS['optimizer_state_dict'])
         pre_epoch = checkpointG['epoch']
 
-        netG.train()
-        netD_B.train()
-        netD_S.train()
+    netG.train()
+    netD_B.train()
+    netD_S.train()
 
     print(netG)
     print(netD_B)
@@ -109,7 +109,6 @@ def train(args):
     for epoch in range(pre_epoch, args.epoch):
         all_psnr = []
         all_ssim = []
-        print("batch_size", args.batch_size)
         for iteration, batch in enumerate(train_data_loader, 1):
             real_B, real_S, img_name = batch[0], batch[1], batch[2]
             real_B, real_S = real_B.to(device), real_S.to(device)
