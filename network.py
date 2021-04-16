@@ -95,7 +95,8 @@ class Generator(nn.Module):
                                 nn.ConvTranspose2d(self.ngf * 2, self.ngf * 1, kernel_size=3, stride=2, padding=1,
                                                    output_padding=1))   # (B, 64, H, W)
         self.d2 = nn.Sequential(ConvBlock(self.ngf * 2, self.ngf * 1),
-                                nn.Conv2d(self.ngf * 1, self.input_nc, kernel_size=3, stride=1, padding=1,
+                                nn.ReflectionPad2d((1, 1, 1, 1)),
+                                nn.Conv2d(self.ngf * 1, self.input_nc, kernel_size=3, stride=1, padding=0,
                                           padding_mode='circular'),     # (B, 1, H, W)
                                 nn.Tanh())
 
@@ -111,10 +112,8 @@ class Generator(nn.Module):
         # Decoder
         e_layer3 = torch.cat([e_layer2, e_layer3], 1)
         d_layer1 = self.d1(e_layer3)
-        print(d_layer1.shape)
 
         d_layer1 = torch.cat([e_layer1, d_layer1], 1)
-        print(d_layer1.shape)
         d_layer2 = self.d2(d_layer1)
 
         # print(img.shape)
