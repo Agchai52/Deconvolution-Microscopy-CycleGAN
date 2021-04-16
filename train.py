@@ -115,8 +115,6 @@ def train(args):
 
             fake_S = netG(real_B)
             fake_B = netG_S2B(real_S)
-            print(fake_B.shape)
-            exit()
 
             ############################
             # (1) Update D_S network: maximize log(D(x)) + log(1 - D(G(z)))
@@ -258,6 +256,8 @@ def train(args):
                 }, net_d_s_save_path)
                 print("Checkpoint saved to {}".format("checkpoint/"))
 
+                break
+
         # Update Learning rate
         #lr_scheduler_G.step()
         #lr_scheduler_D.step()
@@ -267,6 +267,7 @@ def train(args):
         with open(ddg_record, 'a+') as file:
             file.writelines(ddg_str + "\n")
 
+        exit()
         if args.save_intermediate:
             with torch.no_grad():
                 for batch in test_data_loader:
