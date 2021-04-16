@@ -258,7 +258,6 @@ def train(args):
                 }, net_d_s_save_path)
                 print("Checkpoint saved to {}".format("checkpoint/"))
 
-
         # Update Learning rate
         #lr_scheduler_G.step()
         #lr_scheduler_D.step()
@@ -280,8 +279,6 @@ def train(args):
                     cur_psnr, cur_ssim = compute_metrics(real_S, pred_S)
                     all_psnr.append(cur_psnr)
                     all_ssim.append(cur_ssim)
-                    print('test_{}: PSNR = {} dB, SSIM = {}'.format(img_name[0], cur_psnr, cur_ssim))
-                    exit()
                     if img_name[0][-3:] == '001':
                         img_S = pred_S.detach().squeeze(0).cpu()
                         save_img(img_S, '{}/test_'.format(args.test_dir) + img_name[0])
