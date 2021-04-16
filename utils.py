@@ -124,7 +124,7 @@ def plot_losses():
     plt.ylim(ymin=0, ymax=2.)  # ymax=60
     plt.title("D1_D2_G PSNR")
     plt.savefig("plot_ddg_loss.jpg")
-#plot_losses()
+plot_losses()
 
 
 
