@@ -114,9 +114,9 @@ def train(args):
             real_B, real_S = real_B.to(device), real_S.to(device)
 
             fake_S = netG(real_B)
-            print(fake_S.shape)
-            exit()
             fake_B = netG_S2B(real_S)
+            print(fake_B.shape)
+            exit()
 
             ############################
             # (1) Update D_S network: maximize log(D(x)) + log(1 - D(G(z)))
