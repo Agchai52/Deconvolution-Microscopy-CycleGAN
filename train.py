@@ -108,8 +108,6 @@ def train(args):
     print('===> Training')
     print('Start from epoch: ', pre_epoch)
     for epoch in range(pre_epoch, args.epoch):
-        all_psnr = []
-        all_ssim = []
         cur_d1 = []
         cur_d2 = []
         cur_g = []
@@ -272,6 +270,8 @@ def train(args):
             file.writelines(ddg_str + "\n")
 
         if args.save_intermediate:
+            all_psnr = []
+            all_ssim = []
             with torch.no_grad():
                 for batch in test_data_loader:
                     real_B, real_S, img_name = batch[0], batch[1], batch[2]
@@ -281,6 +281,8 @@ def train(args):
                     cur_psnr, cur_ssim = compute_metrics(real_S, pred_S)
                     all_psnr.append(cur_psnr)
                     all_ssim.append(cur_ssim)
+                    print('test_{}: PSNR = {} dB, SSIM = {}'.format(img_name[0], cur_psnr, cur_ssim))
+                    exit()
                     if img_name[0][-3:] == '001':
                         img_S = pred_S.detach().squeeze(0).cpu()
                         save_img(img_S, '{}/test_'.format(args.test_dir) + img_name[0])
@@ -296,7 +298,7 @@ def train(args):
 
     if args.save_intermediate:
         print("===> Average Validation PSNR for each epoch")
-        # print(PSNR_average)
+        print(PSNR_average)
 
     print("===> Saving Losses")
     plot_losses()
