@@ -271,7 +271,6 @@ def train(args):
         with open(ddg_record, 'a+') as file:
             file.writelines(ddg_str + "\n")
 
-        exit()
         if args.save_intermediate:
             with torch.no_grad():
                 for batch in test_data_loader:
