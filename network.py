@@ -158,12 +158,23 @@ class Discriminator(nn.Module):
                                  )                                                  # (B, 1, H/32, W/32)
 
     def forward(self, img):
+        def randomCrop(img, crop_shape):
+            b, _, h, w = img.shape
+            h1 = int(np.ceil(np.random.uniform(1e-2, h - crop_shape[0])))
+            w1 = int(np.ceil(np.random.uniform(1e-2, w - crop_shape[1])))
+            crop = img[:, :, h1:h1+crop_shape[0], w1:w1+crop_shape[1]]
+            return crop
+
         b, _, h, w = img.shape
         out1 = self.d_1(img)
-        img = transforms.RandomCrop((h // 2, w // 2))(img)
+        img = randomCrop(img, (h // 2, w // 2))
         out2 = self.d_2(img)
-        img = transforms.RandomCrop((h // 4, w // 4))(img)
+        img = randomCrop(img, (h // 4, w // 4))
         out3 = self.d_3(img)
+
+        print(out1.shape)
+        print(out2.shape)
+        print(out3.shape)
         return out1, out2, out3
 
 
