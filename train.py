@@ -296,7 +296,7 @@ def train(args):
 
     if args.save_intermediate:
         print("===> Average Validation PSNR for each epoch")
-        print(PSNR_average)
+        # print(PSNR_average)
 
     print("===> Saving Losses")
     plot_losses()
