@@ -32,15 +32,14 @@ class DeblurDataset(Dataset):
 
         img_A = transforms.Resize((args.fine_size, args.fine_size))(img_A)
 
-        if self.is_train:  # Only resize input for training
+        if self.is_train:  # Only resize and flip input for training
             img_B = transforms.Resize((args.fine_size, args.fine_size))(img_B)
-
-        if np.random.random() < 0.5:
-            img_A = img_A.transpose(Image.FLIP_LEFT_RIGHT)
-            img_B = img_B.transpose(Image.FLIP_LEFT_RIGHT)
-        if np.random.random() < 0.5:
-            img_A = img_A.transpose(Image.FLIP_TOP_BOTTOM)
-            img_B = img_B.transpose(Image.FLIP_TOP_BOTTOM)
+            if np.random.random() < 0.5:
+                img_A = img_A.transpose(Image.FLIP_LEFT_RIGHT)
+                img_B = img_B.transpose(Image.FLIP_LEFT_RIGHT)
+            if np.random.random() < 0.5:
+                img_A = img_A.transpose(Image.FLIP_TOP_BOTTOM)
+                img_B = img_B.transpose(Image.FLIP_TOP_BOTTOM)
 
         img_A = self.transform(img_A)
         img_B = self.transform(img_B)
