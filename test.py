@@ -73,3 +73,44 @@ def test(args):
     ave_time = total_time / len(test_data_loader)
     print("Average PSNR = {}, SSIM = {}, Processing time = {}".format(ave_psnr, ave_ssim, ave_time))
 
+def test_real(args):
+    print("====> Loading model")
+    device = torch.device("cuda")
+    model_G = Generator(args, device)
+    if torch.cuda.device_count() >= 1:
+        print("Let's use", torch.cuda.device_count(), "GPUs!")
+        model_G = nn.DataParallel(model_G)
+
+    net_g_path = "checkpoint/netG"
+    netG = model_G.to(device)
+    if not find_latest_model(net_g_path):
+        print(" [!] Load failed...")
+        raise Exception('No model to load for testing!')
+    else:
+        print(" [*] Load SUCCESS")
+        model_path_G = find_latest_model(net_g_path)
+        checkpoint = torch.load(model_path_G)
+        netG.load_state_dict(checkpoint['model_state_dict'])
+        netG.eval()
+
+    print("====> Loading data")
+    ############################
+    # For Real Images
+    ###########################
+    image_dir = "dataset/{}/".format("real_images")
+    image_filenames = [image_dir + x[0:-4] for x in os.listdir(image_dir) if x[-4:] in set([".png", ".jpg"])]
+    test_data_loader = DataLoader(RealImage(image_filenames, args, False), batch_size=1, shuffle=False)
+
+    start_time = time.time()
+    with torch.no_grad():
+        for batch in test_data_loader:
+            real_B, img_name = batch[0], batch[1]
+            real_B = real_B.to(device)
+            pred_S = netG(real_B)
+            pred_S = F.interpolate(pred_S, (real_B.shape[2] * 4, real_B.shape[3] * 4), mode='bilinear')  # (h, w) x 4
+            img_S = pred_S.detach().squeeze(0).cpu()
+            save_img(img_S, '{}/test_'.format(args.test_dir) + img_name[0])
+
+    total_time = time.time() - start_time
+    ave_time = total_time / len(test_data_loader)
+    print("Processing time = {}".format(ave_time))
