@@ -30,9 +30,8 @@ class DeblurDataset(Dataset):
         # w = int(img_A.size[0])
         # h = int(img_A.size[1])
 
-        img_A = transforms.Resize((self.args.fine_size, self.args.fine_size))(img_A)
-
         if self.is_train:  # Only resize sharp and flip sharp and blurry for training
+            img_A = transforms.Resize((self.args.fine_size, self.args.fine_size))(img_A)
             img_B = transforms.Resize((self.args.fine_size, self.args.fine_size))(img_B)
             if np.random.random() < 0.5:
                 img_A = img_A.transpose(Image.FLIP_LEFT_RIGHT)

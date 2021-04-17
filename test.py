@@ -58,7 +58,7 @@ def test(args):
             real_B, real_S, img_name = batch[0], batch[1], batch[2]
             real_B, real_S = real_B.to(device), real_S.to(device)  # B = (B, 1, 64, 64), S = (B, 1, 256, 256)
             pred_S = netG(real_B)
-            pred_S = F.interpolate(pred_S, (args.load_size, args.load_size), mode='bilinear')  # 64 -> 256
+            # pred_S = F.interpolate(pred_S, (args.load_size, args.load_size), mode='bilinear')  # 64 -> 256
             cur_psnr, cur_ssim = compute_metrics(real_S, pred_S)
             all_psnr.append(cur_psnr)
             all_ssim.append(cur_ssim)
