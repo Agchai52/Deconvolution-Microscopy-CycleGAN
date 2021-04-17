@@ -278,7 +278,7 @@ def train(args):
                     cur_psnr, cur_ssim = compute_metrics(real_S, pred_S)
                     all_psnr.append(cur_psnr)
                     all_ssim.append(cur_ssim)
-                    if img_name[0][-3:] == '001':
+                    if img_name[0][-3:] == '01':
                         img_S = pred_S.detach().squeeze(0).cpu()
                         save_img(img_S, '{}/test_'.format(args.test_dir) + img_name[0])
                         print('test_{}: PSNR = {} dB, SSIM = {}'.format(img_name[0], cur_psnr, cur_ssim))
