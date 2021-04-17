@@ -107,7 +107,7 @@ def test_real(args):
             real_B, img_name = batch[0], batch[1]
             real_B = real_B.to(device)
             pred_S = netG(real_B)
-            pred_S = F.interpolate(pred_S, (real_B.shape[2] * 4, real_B.shape[3] * 4), mode='bilinear')  # (h, w) x 4
+            # pred_S = F.interpolate(pred_S, (real_B.shape[2] * 4, real_B.shape[3] * 4), mode='bilinear')  # (h, w) x 4
             img_S = pred_S.detach().squeeze(0).cpu()
             save_img(img_S, '{}/test_'.format(args.test_dir) + img_name[0])
 
