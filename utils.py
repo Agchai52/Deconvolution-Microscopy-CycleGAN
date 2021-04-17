@@ -66,6 +66,7 @@ def plot_losses():
     loss_record = "loss_record.txt"
     psnr_record = "psnr_record.txt"
     ddg_record = "ddg_record.txt"
+    ssim_record = "ssim_record.txt"
 
     losses_dg = np.loadtxt(loss_record)
     psnr_ave = np.loadtxt(psnr_record)
@@ -91,9 +92,7 @@ def plot_losses():
 
     plt.figure()
     plt.plot(losses_dg[0:-1:100, 3], 'b--', label='l2_loss')
-    plt.plot(losses_dg[0:-1:100, 4], 'g:', label='grad_loss')
-    plt.plot(losses_dg[0:-1:100, 5], 'r-', label='dc_loss')
-    plt.plot(losses_dg[0:-1:100, 6], 'y-', label='cycle_loss')
+    plt.plot(losses_dg[0:-1:100, 4], 'y-', label='cycle_loss')
     plt.plot(losses_dg[0:-1:100, 2], 'k-', label='gan_loss')
     plt.xlabel("iteration*100")
     plt.ylabel("Error")
@@ -114,6 +113,15 @@ def plot_losses():
     plt.savefig("plot_psnr_loss.jpg")
 
     plt.figure()
+    plt.plot(ssim_ave, 'r-')
+    plt.xlabel("epochs")
+    plt.ylabel("Average SSIM")
+    # plt.xlim(xmin=-5, xmax=300)  # xmax=300
+    # plt.ylim(ymin=0, ymax=30.)  # ymax=60
+    plt.title("Validation SSIM")
+    plt.savefig("plot_ssim_loss.jpg")
+
+    plt.figure()
     plt.plot(ddg_ave[:, 0], 'b-', label='d_fake')
     plt.plot(ddg_ave[:, 1], 'r-', label='d_real')
     plt.plot(ddg_ave[:, 2], 'g-', label='gan')
@@ -124,7 +132,7 @@ def plot_losses():
     plt.ylim(ymin=0, ymax=2.)  # ymax=60
     plt.title("D1_D2_G PSNR")
     plt.savefig("plot_ddg_loss.jpg")
-#plot_losses()
+plot_losses()
 
 
 
