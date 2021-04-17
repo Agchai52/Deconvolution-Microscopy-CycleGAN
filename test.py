@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 
 from utils import *
 from network import *
-from Dataset import DeblurDataset
+from Dataset import DeblurDataset, RealImage
 
 
 def test(args):
