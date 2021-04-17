@@ -20,7 +20,7 @@ def test(args):
         model_G = nn.DataParallel(model_G)
 
     net_g_path = "checkpoint/netG"
-    net_G = model_G.to(device)
+    netG = model_G.to(device)
     if not find_latest_model(net_g_path):
         print(" [!] Load failed...")
         raise Exception('No model to load for testing!')
@@ -28,8 +28,8 @@ def test(args):
         print(" [*] Load SUCCESS")
         model_path_G = find_latest_model(net_g_path)
         checkpoint = torch.load(model_path_G)
-        net_G.load_state_dict(checkpoint['model_state_dict'])
-        net_G.eval()
+        netG.load_state_dict(checkpoint['model_state_dict'])
+        netG.eval()
 
     print("====> Loading data")
     ############################
