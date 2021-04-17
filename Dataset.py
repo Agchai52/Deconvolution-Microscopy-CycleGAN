@@ -72,7 +72,7 @@ class RealImage(Dataset):
         self.args = args
         self.is_train = is_train
         self.transform = transforms.Compose([transforms.ToTensor(),
-                                             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+                                             transforms.Normalize((0.5,), (0.5,))])
 
     def add_margin(self, pil_img, new_size):
         width, height = pil_img.size
