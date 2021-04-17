@@ -70,6 +70,7 @@ def plot_losses():
 
     losses_dg = np.loadtxt(loss_record)
     psnr_ave = np.loadtxt(psnr_record)
+    ssim_ave = np.loadtxt(ssim_record)
     ddg_ave = np.loadtxt(ddg_record)
 
     plt.figure()
