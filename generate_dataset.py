@@ -226,4 +226,3 @@ if __name__ == "__main__":
 
     # bean = generate_bean(bean_size=3, sigma=0.2, M=50)
     # cv2.imwrite("bean_size3.png", bean)
-
