@@ -41,15 +41,6 @@ def test(args):
     f_test.close()
     test_data_loader = DataLoader(DeblurDataset(test_data, args, False), batch_size=1, shuffle=False)
 
-    ############################
-    # For Other datasets
-    ###########################
-    # image_dir = "dataset/{}/test/a/".format(args.dataset_name)
-    # image_filenames = [x for x in os.listdir(image_dir) if is_image_file(x)]
-    # transform_list = [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
-    # transform = transforms.Compose(transform_list)
-    # for image_name in image_filenames:
-
     all_psnr = []
     all_ssim = []
     start_time = time.time()
@@ -97,7 +88,7 @@ def test_real(args):
     ############################
     # For Real Images
     ###########################
-    image_dir = "dataset/{}/".format("real_images")
+    image_dir = "dataset/real_images/"
     image_filenames = [image_dir + x[0:-4] for x in os.listdir(image_dir) if x[-4:] in set([".png", ".jpg"])]
     test_data_loader = DataLoader(RealImage(image_filenames, args, False), batch_size=1, shuffle=False)
 
@@ -107,7 +98,6 @@ def test_real(args):
             real_B, img_name = batch[0], batch[1]
             real_B = real_B.to(device)
             pred_S = netG(real_B)
-            # pred_S = F.interpolate(pred_S, (real_B.shape[2] * 4, real_B.shape[3] * 4), mode='bilinear')  # (h, w) x 4
             img_S = pred_S.detach().squeeze(0).cpu()
             save_img(img_S, '{}/test_'.format(args.test_dir) + img_name[0])
 
