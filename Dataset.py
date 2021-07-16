@@ -33,6 +33,7 @@ class DeblurDataset(Dataset):
         4. normalize from [0.0, 1.0] to [-1.0, 1.0]
         """
 
+        print(index)
         line = self.img_path[index]
         img_path, label = line.split('\t')
 
