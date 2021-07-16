@@ -33,9 +33,12 @@ class DeblurDataset(Dataset):
         4. normalize from [0.0, 1.0] to [-1.0, 1.0]
         """
 
-        img_A = Image.open(self.img_path[index] + '_blur.png').convert('L')
-        img_B = Image.open(self.img_path[index] + '_sharp.png').convert('L')
-        img_name = self.img_path[index][-4:]
+        line = self.img_path[index]
+        img_path, label = line.split('\t')
+
+        img_A = Image.open(img_path[index] + '_blur.png').convert('L')
+        img_B = Image.open(img_path[index] + '_sharp.png').convert('L')
+        img_name = img_path[index][-4:]
         img_name.rstrip()
 
         w = int(img_A.size[0])
