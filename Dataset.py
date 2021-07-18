@@ -57,8 +57,6 @@ class DeblurDataset(Dataset):
 
         img_A = self.transform(img_A)
         img_B = self.transform(img_B)
-        img_A = self.transform(img_A)
-        img_B = self.transform(img_B)
 
         return img_A, img_B, img_name
 
