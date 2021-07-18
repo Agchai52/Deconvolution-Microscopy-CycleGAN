@@ -41,18 +41,13 @@ class DeblurDataset(Dataset):
         img_name = img_path[-4:]
         img_name.rstrip()
 
-        w = int(img_A.size[0])
-        h = int(img_A.size[1])
+        # Downsample the blurry image to (64, 64)
+        img_A = img_A.resize((self.args.fine_size, self.args.fine_size), resample=Image.BILINEAR)
 
-        if w % 4 != 0 or h % 4 != 0:
-            new_h = (h // 4 + 1) * 4 if h % 4 != 0 else h
-            new_w = (w // 4 + 1) * 4 if w % 4 != 0 else w
-            img_A = self.add_margin(img_A, (new_h, new_w))
-            img_B = self.add_margin(img_B, (new_h, new_w))
+        # if self.is_train:
+        #     img_B = img_B.resize((self.args.fine_size, self.args.fine_size), resample=Image.BILINEAR)
 
-        if self.is_train:  # Only resize sharp and flip sharp and blurry for training
-            img_A = transforms.Resize((self.args.fine_size, self.args.fine_size))(img_A)
-            img_B = transforms.Resize((self.args.fine_size, self.args.fine_size))(img_B)
+        if self.is_train:
             if np.random.random() < 0.5:
                 img_A = img_A.transpose(Image.FLIP_LEFT_RIGHT)
                 img_B = img_B.transpose(Image.FLIP_LEFT_RIGHT)
@@ -60,6 +55,8 @@ class DeblurDataset(Dataset):
                 img_A = img_A.transpose(Image.FLIP_TOP_BOTTOM)
                 img_B = img_B.transpose(Image.FLIP_TOP_BOTTOM)
 
+        img_A = self.transform(img_A)
+        img_B = self.transform(img_B)
         img_A = self.transform(img_A)
         img_B = self.transform(img_B)
 
