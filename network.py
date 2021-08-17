@@ -22,8 +22,11 @@ class BlurModel(nn.Module):
             :return: z
             """
             x, y = loc
-            x, y = x * 50, y * 50
-            z = np.exp(-np.log(2) * (x * x + y * y) / (160.5586 * 160.5586)) * 255
+            scale = 25 * 4
+            sigma = 160.5586  # IR-PHI: 160.5586; Fluoresce0: 2.2282; Fluoresce1: 3.6433
+            a = 65.51  # IR-PHI: 65.51; Fluoresce0: 1174.6063; Fluoresce1: 1.8155
+            x, y = scale * x, scale * y
+            z = np.sqrt(np.log(2) / np.pi) * a / sigma * np.exp(-np.log(2) * (x * x + y * y) / (sigma * sigma))
             return z
 
         def get_kernel():
