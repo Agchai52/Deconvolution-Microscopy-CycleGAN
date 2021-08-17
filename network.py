@@ -22,7 +22,7 @@ class BlurModel(nn.Module):
             :return: z
             """
             x, y = loc
-            x, y = x * 50, y * 50
+            x, y = x * 100, y * 100
             z = np.exp(-np.log(2) * (x * x + y * y) / (160.5586 * 160.5586)) * 255
             return z
 
