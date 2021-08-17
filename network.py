@@ -22,7 +22,7 @@ class BlurModel(nn.Module):
             :return: z
             """
             x, y = loc
-            scale = 25 * 4
+            scale = 25 * 2
             sigma = 160.5586  # IR-PHI: 160.5586; Fluoresce0: 2.2282; Fluoresce1: 3.6433
             a = 65.51  # IR-PHI: 65.51; Fluoresce0: 1174.6063; Fluoresce1: 1.8155
             x, y = scale * x, scale * y
